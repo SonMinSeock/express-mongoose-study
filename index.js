@@ -2,6 +2,7 @@
 const express = require("express");
 const path = require("path");
 const mongoose = require("mongoose");
+const methodOverride = require("method-override");
 
 // Model import...
 const Product = require("./models/product");
@@ -22,6 +23,7 @@ app.set("view engine", "ejs");
 
 // setting...
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 
 // router
 app.get("/products", async (req, res) => {
@@ -52,6 +54,33 @@ app.get("/products/:id", async (req, res) => {
   const product = await Product.findById(id);
 
   res.render("products/show", { product });
+});
+
+app.get("/products/:id/edit", async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+  const product = await Product.findById(id);
+  res.render("products/edit", { product });
+});
+
+app.put("/products/:id", async (req, res) => {
+  const {
+    params: { id },
+    body: { name, price, category },
+  } = req;
+
+  const product = await Product.findByIdAndUpdate(
+    id,
+    {
+      name,
+      price: +price,
+      category,
+    },
+    { runValidators: true, new: true }
+  );
+
+  res.redirect(`/products/${product._id}`);
 });
 
 // server listening
