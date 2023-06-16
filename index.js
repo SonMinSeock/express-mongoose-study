@@ -28,10 +28,17 @@ app.use(methodOverride("_method"));
 
 // router
 app.get("/products", async (req, res) => {
-  const products = await Product.find({});
-  console.log("read products : ", products);
+  const {
+    query: { category },
+  } = req;
 
-  res.render("products/index", { products });
+  if (category) {
+    const products = await Product.find({ category: category });
+    res.render("products/index", { products, category });
+  } else {
+    const products = await Product.find({});
+    res.render("products/index", { products, category: "All" });
+  }
 });
 
 app.post("/products", async (req, res) => {
