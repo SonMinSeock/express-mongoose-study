@@ -16,6 +16,7 @@ mongoose
 // define code....
 const app = express();
 const PORT = 3000;
+const categories = ["fruit", "vegetable", "dairy"];
 
 // view setting
 app.set("views", path.join(__dirname, "views"));
@@ -43,7 +44,7 @@ app.post("/products", async (req, res) => {
 });
 
 app.get("/products/new", (req, res) => {
-  res.render("products/new");
+  res.render("products/new", { categories });
 });
 
 app.get("/products/:id", async (req, res) => {
@@ -61,7 +62,7 @@ app.get("/products/:id/edit", async (req, res) => {
     params: { id },
   } = req;
   const product = await Product.findById(id);
-  res.render("products/edit", { product });
+  res.render("products/edit", { product, categories });
 });
 
 app.put("/products/:id", async (req, res) => {
