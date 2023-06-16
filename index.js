@@ -28,6 +28,16 @@ app.get("/products", async (req, res) => {
   res.render("products/index", { products });
 });
 
+app.get("/products/:id", async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+
+  const product = await Product.findById(id);
+
+  res.render("products/show", { product });
+});
+
 // server listening
 app.listen(PORT, () => {
   console.log(`App is Listening on PORT : ${PORT}`);
