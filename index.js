@@ -20,12 +20,28 @@ const PORT = 3000;
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+// setting...
+app.use(express.urlencoded({ extended: true }));
+
 // router
 app.get("/products", async (req, res) => {
   const products = await Product.find({});
   console.log("read products : ", products);
 
   res.render("products/index", { products });
+});
+
+app.post("/products", async (req, res) => {
+  const { name, price, category } = req.body;
+
+  const newProduct = new Product({ name, price: +price, category });
+  await newProduct.save();
+
+  res.redirect(`/products/${newProduct._id}`);
+});
+
+app.get("/products/new", (req, res) => {
+  res.render("products/new");
 });
 
 app.get("/products/:id", async (req, res) => {
